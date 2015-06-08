@@ -1,5 +1,8 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="me.weppler.android.spotifystreamer.ArtistSearchActivityFragment"
-    tools:layout="@layout/fragment_artist_search" android:layout_width="match_parent"
+<fragment
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment"
+    android:name="me.weppler.android.spotifystreamer.app.ArtistSearchActivityFragment"
+    tools:layout="@layout/fragment_artist_search"
+    android:layout_width="match_parent"
     android:layout_height="match_parent" />

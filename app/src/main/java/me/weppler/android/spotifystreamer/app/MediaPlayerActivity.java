@@ -1,9 +1,11 @@
-package me.weppler.android.spotifystreamer;
+package me.weppler.android.spotifystreamer.app;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import me.weppler.android.spotifystreamer.app.R;
 
 
 public class MediaPlayerActivity extends ActionBarActivity {

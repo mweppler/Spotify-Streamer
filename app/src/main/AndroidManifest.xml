@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.weppler.android.spotifystreamer" >
+    package="me.weppler.android.spotifystreamer.app" >
 
     <application
         android:allowBackup="true"
@@ -19,6 +19,9 @@
         <activity
             android:name=".TopTracksActivity"
             android:label="@string/title_activity_top_tracks" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.weppler.android.spotifystreamer.app.ArtistSearchActivity" />
         </activity>
         <activity
             android:name=".MediaPlayerActivity"

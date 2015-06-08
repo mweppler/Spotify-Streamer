@@ -1,4 +1,4 @@
-package me.weppler.android.spotifystreamer;
+package me.weppler.android.spotifystreamer.app;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import me.weppler.android.spotifystreamer.app.R;
 
 
 /**
@@ -44,6 +46,7 @@ public class ArtistSearchActivityFragment extends Fragment {
                 R.layout.artist_list_item,
                 R.id.artist_name_text_view,
                 artistArrayList
+//                new ArrayList<String>()
         );
         final ListView listView = (ListView) rootView.findViewById(R.id.artist_list_view);
         listView.setAdapter(mArtistAdapter);
@@ -51,7 +54,10 @@ public class ArtistSearchActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String artist = mArtistAdapter.getItem(position);
-                Toast.makeText(getActivity(), artist, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), artist, Toast.LENGTH_SHORT).show();
+                Intent artistTracksIntent = new Intent(getActivity(), TopTracksActivity.class);
+                artistTracksIntent.putExtra(Intent.EXTRA_TEXT, artist);
+                startActivity(artistTracksIntent);
             }
         });
         return rootView;

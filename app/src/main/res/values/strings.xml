@@ -6,4 +6,8 @@
     <string name="search_hint">Search Artist</string>
     <string name="title_activity_top_tracks">TopTracksActivity</string>
     <string name="title_activity_media_player">MediaPlayerActivity</string>
+    <string name="track_name_placeholder">Tell All the People</string>
+    <string name="track_album_placeholder">The Soft Parade</string>
+    <string name="track_album_hash_key">album_name</string>
+    <string name="track_name_hash_key">track_name</string>
 </resources>
