@@ -65,10 +65,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String artist = mArtists.get(holder.getAdapterPosition()).getName();
+                String spotifyId = mArtists.get(holder.getAdapterPosition()).getSpotifyId();
                 //Toast.makeText(v.getContext(), artist, Toast.LENGTH_SHORT).show();
                 Intent artistTracksIntent = new Intent(v.getContext(), TopTracksActivity.class);
-                artistTracksIntent.putExtra(Intent.EXTRA_TEXT, artist);
+                artistTracksIntent.putExtra(Intent.EXTRA_TEXT, spotifyId);
                 holder.itemView.getContext().startActivity(artistTracksIntent);
             }
         });

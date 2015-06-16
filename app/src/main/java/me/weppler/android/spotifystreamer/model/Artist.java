@@ -9,17 +9,20 @@ import android.os.Parcelable;
 public class Artist implements Parcelable {
     private String imageUrl;
     private String name;
+    private String spotifyId;
 
     public Artist() {}
 
-    public Artist(String name, String imageUrl) {
+    public Artist(String name, String imageUrl, String spotifyId) {
         this.imageUrl = imageUrl;
         this.name = name;
+        this.spotifyId = spotifyId;
     }
 
     private Artist(Parcel parcel) {
         imageUrl = parcel.readString();
         name = parcel.readString();
+        spotifyId = parcel.readString();
     }
 
     public String getImageUrl() {
@@ -30,6 +33,10 @@ public class Artist implements Parcelable {
         return name;
     }
 
+    public String getSpotifyId() {
+        return spotifyId;
+    }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -38,9 +45,15 @@ public class Artist implements Parcelable {
         this.name = name;
     }
 
+    public void setSpotifyId(String spotifyId) {
+        this.spotifyId = spotifyId;
+    }
+
     @Override
     public String toString() {
-        return "\"name\": \"" + name + "\", \"imageUrl\":" + imageUrl + "\"";
+        return "\"name\": \"" + name + "\"," +
+                "\"imageUrl\":" + imageUrl + "\"," +
+                "\"spotifyId\":" + spotifyId + "\"";
     }
 
     public int describeContents() {
@@ -50,6 +63,7 @@ public class Artist implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(imageUrl);
         parcel.writeString(name);
+        parcel.writeString(spotifyId);
     }
 
     public static final Parcelable.Creator<Artist> CREATOR = new Parcelable.Creator<Artist>() {

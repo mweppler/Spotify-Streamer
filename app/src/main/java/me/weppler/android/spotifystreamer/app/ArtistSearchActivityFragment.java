@@ -41,8 +41,7 @@ public class ArtistSearchActivityFragment extends Fragment {
     private RecyclerView.Adapter mArtistAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public ArtistSearchActivityFragment() {
-    }
+    public ArtistSearchActivityFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,7 +141,8 @@ public class ArtistSearchActivityFragment extends Fragment {
                 } else {
                     imageUrl = "";
                 }
-                mArtists.add(new Artist(artistName, imageUrl));
+                String spotifyId = artist.id;
+                mArtists.add(new Artist(artistName, imageUrl, spotifyId));
             }
             return null;
         }

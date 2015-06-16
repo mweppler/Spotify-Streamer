@@ -1,19 +1,26 @@
 package me.weppler.android.spotifystreamer.app;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Tracks;
+import me.weppler.android.spotifystreamer.app.adapter.TrackAdapter;
 import me.weppler.android.spotifystreamer.model.Track;
 
 
@@ -22,13 +29,14 @@ import me.weppler.android.spotifystreamer.model.Track;
  */
 public class TopTracksActivityFragment extends Fragment {
     private final String TAG = TopTracksActivityFragment.class.getSimpleName();
-    private String mArtistName;
-    private SimpleAdapter mTrackAdapter;
-    private ArrayList<HashMap<String, String>> mTrackListing;
 
-    public TopTracksActivityFragment() {
-        //getActivity().setTitle(getString(R.string.top_tracks_title));
-    }
+    private String mSpotifyArtistId;
+    private ArrayList<Track> mTracks;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mTrackAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    public TopTracksActivityFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,53 +44,84 @@ public class TopTracksActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_top_tracks, container, false);
         Intent incomingIntent = getActivity().getIntent();
         if (incomingIntent != null && incomingIntent.hasExtra(Intent.EXTRA_TEXT)) {
-            mArtistName = incomingIntent.getStringExtra(Intent.EXTRA_TEXT);
+            mSpotifyArtistId = incomingIntent.getStringExtra(Intent.EXTRA_TEXT);
         }
-        mTrackListing = new ArrayList<HashMap<String, String>>();
-        Track[] tracks = {
-                new Track("Light My Fire", "The Doors"),
-                new Track("Riders on the Storm", "L.A. Woman"),
-                new Track("Break On Through (to the Other Side)", "The Doors"),
-                new Track("Hello, I Love You", "Waiting for the Sun"),
-                new Track("Love Me Two Times", "Strange Days"),
-                new Track("Touch Me", "The Soft Parade"),
-                new Track("L.A. Woman", "L.A. Woman"),
-                new Track("Crystal Ship", "The Doors"),
-                new Track("Roadhouse Blues", "Morrison Hotel"),
-                new Track("Love Her Madly", "L.A. Woman")
-        };
-        int listLength = tracks.length;
-        for (int i = 0; i < listLength; i++) {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put(getString(R.string.track_name_hash_key), tracks[i].getName());
-            map.put(getString(R.string.track_album_hash_key), tracks[i].getAlbum());
-            mTrackListing.add(map);
+        fetchTopTracksForArtist(mSpotifyArtistId);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.top_tracks_recycler_view);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        if ((savedInstanceState != null)
+                && (savedInstanceState.getSerializable("TRACK_RESULTS") != null)) {
+            mTracks = savedInstanceState.getParcelableArrayList("TRACK_RESULTS");
+        } else {
+            mTracks = new ArrayList<>();
         }
-        mTrackAdapter = new SimpleAdapter(
-                getActivity(),
-                mTrackListing,
-                R.layout.track_list_item,
-                new String[] {
-                        getString(R.string.track_name_hash_key),
-                        getString(R.string.track_album_hash_key)
-                },
-                new int[] {
-                        R.id.track_name_text_view,
-                        R.id.track_album_text_view
-                }
-        );
-        final ListView listView = (ListView) rootView.findViewById(R.id.track_list_view);
-        listView.setAdapter(mTrackAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> map = mTrackListing.get(position);
-                String trackName = map.get(getString(R.string.track_name_hash_key));
-                String trackAlbum = map.get(getString(R.string.track_album_hash_key));
-                String trackInfo = trackName + " - " + trackAlbum;
-                Toast.makeText(getActivity(), trackInfo, Toast.LENGTH_SHORT).show();
-            }
-        });
+        mTrackAdapter = new TrackAdapter(mTracks);
+        mRecyclerView.setAdapter(mTrackAdapter);
         return rootView;
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList("TRACK_RESULTS", mTracks);
+    }
+
+    private void fetchTopTracksForArtist(String query) {
+        TopTrackDataTask trackTask = new TopTrackDataTask();
+        trackTask.execute(query);
+    }
+
+    public class TopTrackDataTask extends AsyncTask<String, Void, Void> {
+        private final String TAG = TopTrackDataTask.class.getSimpleName();
+
+        @Override
+        protected Void doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+            SpotifyApi api = new SpotifyApi();
+            SpotifyService spotify = api.getService();
+            HashMap<String, Object> queryString = new HashMap<String, Object>();
+            queryString.put(SpotifyService.COUNTRY, Locale.getDefault().getCountry());
+            Tracks results = spotify.getArtistTopTrack(params[0], queryString);
+            if (results.tracks == null) {
+                return null;
+            } else {
+                Log.d(TAG, "results: " + results);
+                updateTracksFromResults(results.tracks);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            if (mTracks.size() == 0) {
+                String msg = "Couldn't find any tracks for the artist.";
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mTrackAdapter.notifyDataSetChanged();
+        }
+
+        private Void updateTracksFromResults(
+                List<kaaes.spotify.webapi.android.models.Track> trackData) {
+            mTracks.clear();
+            for (kaaes.spotify.webapi.android.models.Track track : trackData) {
+                String albumImageUrl;
+                String albumName = track.album.name;
+                String artistName = track.artists.get(0).name;
+                String trackName = track.name;
+                String playbackUrl = track.preview_url;
+                String spotifyId = track.id;
+                if (track.album.images.size() > 0) {
+                    albumImageUrl = track.album.images.get(0).url;
+                } else {
+                    albumImageUrl = "";
+                }
+                mTracks.add(new Track(artistName, albumName, trackName, albumImageUrl,
+                        playbackUrl, spotifyId));
+            }
+            return null;
+        }
     }
 }
