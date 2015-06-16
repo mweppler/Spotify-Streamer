@@ -27,6 +27,7 @@ public class TopTracksActivityFragment extends Fragment {
     private ArrayList<HashMap<String, String>> mTrackListing;
 
     public TopTracksActivityFragment() {
+        //getActivity().setTitle(getString(R.string.top_tracks_title));
     }
 
     @Override

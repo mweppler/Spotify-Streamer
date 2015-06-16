@@ -1,7 +1,7 @@
 <fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment"
+    android:id="@+id/activity_top_tracks_fragment"
     android:name="me.weppler.android.spotifystreamer.app.TopTracksActivityFragment"
     tools:layout="@layout/fragment_top_tracks"
     android:layout_width="match_parent"

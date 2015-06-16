@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:id="@+id/artist_list_item_view" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/artist_thumb_image_view"
-        android:src="@mipmap/ic_launcher"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_centerVertical="true" />
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:id="@+id/artist_item_view" >
 
-    <TextView
-        android:id="@+id/artist_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/artist_thumb_image_view"
-        android:gravity="center_vertical"
-        android:text="@string/artist_name_placeholder"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp" />
+        <ImageView
+            android:id="@+id/artist_thumb_image_view"
+            android:src="@mipmap/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/artist_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/artist_thumb_image_view"
+            android:gravity="center_vertical"
+            android:text="@string/artist_name_placeholder"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|bottom" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height=".5dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="#FF009688" />
+
+    </FrameLayout>
+
+</LinearLayout>
